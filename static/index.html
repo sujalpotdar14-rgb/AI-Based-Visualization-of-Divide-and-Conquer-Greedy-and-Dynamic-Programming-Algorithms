@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI DAA Visualizer | Divide-and-Conquer, Greedy & Dynamic Programming</title>
+  <meta name="description" content="Interactive AI-based visualizer and algorithm tutor for Divide-and-Conquer, Greedy, and Dynamic Programming algorithms with step-by-step traces, Master Theorem solver, and NLP problem detective.">
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/visualizer.css">
+  <link rel="stylesheet" href="/static/css/ai_panel.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo-icon">⚡</div>
+      <div>
+        <h1 class="brand-title">AlgoAI <span class="brand-badge">DAA Visualizer</span></h1>
+      </div>
+    </div>
+
+    <!-- Paradigm Navigation Tabs -->
+    <nav class="nav-paradigms" aria-label="Algorithm Paradigms">
+      <button class="paradigm-tab active" data-paradigm="divide_and_conquer">
+        <span>⚔️</span> Divide & Conquer
+      </button>
+      <button class="paradigm-tab" data-paradigm="greedy">
+        <span>🎯</span> Greedy Algorithms
+      </button>
+      <button class="paradigm-tab" data-paradigm="dynamic_programming">
+        <span>🧩</span> Dynamic Programming
+      </button>
+      <button class="paradigm-tab" data-paradigm="ai_detective">
+        <span>🤖</span> AI Problem Detective
+      </button>
+      <button class="paradigm-tab" data-paradigm="master_theorem">
+        <span>📐</span> Master Theorem
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button id="btn-sound-toggle" class="btn-icon-label" title="Toggle audio effects">
+        🔊 Sound ON
+      </button>
+      <button id="btn-open-settings" class="btn-icon-label" onclick="document.getElementById('api-key-modal').style.display='flex'">
+        ⚙️ Gemini API Key
+      </button>
+    </div>
+  </header>
+
+  <!-- Algorithm Sub-bar (Pills) -->
+  <section class="algo-subbar">
+    <div class="algo-pills-list">
+      <!-- Divide and Conquer Pills -->
+      <button class="algo-pill active" data-paradigm="divide_and_conquer" data-algo="merge_sort">Merge Sort</button>
+      <button class="algo-pill" data-paradigm="divide_and_conquer" data-algo="quick_sort">Quick Sort</button>
+      <button class="algo-pill" data-paradigm="divide_and_conquer" data-algo="binary_search">Binary Search</button>
+      <button class="algo-pill" data-paradigm="divide_and_conquer" data-algo="max_subarray">Max Subarray (Kadane)</button>
+
+      <!-- Greedy Pills (hidden by default) -->
+      <button class="algo-pill" style="display: none;" data-paradigm="greedy" data-algo="fractional_knapsack">Fractional Knapsack</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="greedy" data-algo="dijkstra">Dijkstra's Shortest Path</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="greedy" data-algo="activity_selection">Activity Selection</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="greedy" data-algo="huffman">Huffman Coding</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="greedy" data-algo="job_sequencing">Job Sequencing</button>
+
+      <!-- Dynamic Programming Pills (hidden by default) -->
+      <button class="algo-pill" style="display: none;" data-paradigm="dynamic_programming" data-algo="knapsack01">0/1 Knapsack</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="dynamic_programming" data-algo="lcs">Longest Common Subsequence (LCS)</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="dynamic_programming" data-algo="coin_change">Coin Change</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="dynamic_programming" data-algo="mcm">Matrix Chain Multiplication</button>
+      <button class="algo-pill" style="display: none;" data-paradigm="dynamic_programming" data-algo="fibonacci">Fibonacci DP</button>
+    </div>
+  </section>
+
+  <!-- MAIN WORKSPACE VIEW -->
+  <main id="visualizer-main-view" class="main-content-layout">
+    
+    <!-- Left Visualizer Column -->
+    <div class="visualizer-column">
+      
+      <!-- Controls & Input Card -->
+      <div class="glass-card controls-card">
+        
+        <!-- Algorithm Title & Complexities -->
+        <div class="controls-row-top">
+          <div class="algo-meta-info">
+            <h2 id="algo-title" class="algo-name">Merge Sort</h2>
+            <span id="algo-paradigm-badge" class="badge-tag">Divide and Conquer</span>
+            <span class="complexity-pill" title="Time Complexity">⏳ Time: <strong id="algo-time-complexity">O(n log n)</strong></span>
+            <span class="complexity-pill space-pill" title="Space Complexity">💾 Space: <strong id="algo-space-complexity">O(n)</strong></span>
+          </div>
+
+          <!-- AI Testcase Selector -->
+          <div class="ai-testcase-controls" style="display: flex; gap: 0.5rem; align-items: center;">
+            <select id="testcase-type-select" class="app-input" style="padding: 0.35rem 0.6rem;">
+              <option value="random">🎲 Random Case</option>
+              <option value="worst_case">⚠️ Worst-Case Scenario</option>
+              <option value="best_case">✨ Best-Case Scenario</option>
+              <option value="tricky_greedy_fails">🔥 Tricky (Greedy Fails)</option>
+            </select>
+            <button id="btn-ai-gen-testcase" class="btn btn-secondary" title="Auto-generate tailored testcase">
+              ⚡ AI Preset
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Inputs Area -->
+        <div class="inputs-row">
+          <div id="dynamic-inputs-area" style="display: flex; gap: 0.85rem; align-items: center; flex-wrap: wrap;">
+            <!-- Injected dynamically by app.js based on algorithm -->
+          </div>
+          <button id="btn-apply-input" class="btn btn-primary" title="Re-run trace with custom inputs">
+            🚀 Apply & Trace
+          </button>
+        </div>
+
+        <!-- Playback Controls Bar -->
+        <div class="playback-bar">
+          <div class="playback-buttons">
+            <button id="btn-prev" class="btn btn-secondary" title="Previous Step (Left Arrow)">⏮ Prev</button>
+            <button id="btn-play" class="btn btn-primary" title="Play/Pause (Spacebar)">▶ Play</button>
+            <button id="btn-next" class="btn btn-secondary" title="Next Step (Right Arrow)">Next ⏭</button>
+            <button id="btn-reset" class="btn btn-secondary" title="Reset to start (R)">🔄 Reset</button>
+          </div>
+
+          <div class="scrubber-group">
+            <input type="range" id="step-scrubber" class="app-slider" min="0" max="10" value="0">
+            <span id="step-counter-label" class="step-label">Step 1 of 1</span>
+          </div>
+
+          <div class="speed-group">
+            <span>Speed:</span>
+            <input type="range" id="speed-slider" class="app-slider" style="width: 80px;" min="0.25" max="3" step="0.25" value="1">
+            <span id="speed-val" style="font-family: var(--font-mono); font-weight: 600;">1x</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Step Callout Banner -->
+      <div class="step-callout-banner">
+        <div class="step-callout-title">
+          <span>📍</span> <span id="step-title-callout">Initializing Algorithm...</span>
+        </div>
+        <div id="step-desc-callout" class="step-callout-desc">
+          Ready to trace. Click Play or Next to step through.
+        </div>
+      </div>
+
+      <!-- Visualizer Canvas Stage -->
+      <div class="glass-card visualizer-stage">
+        <div id="main-spinner" class="spinner-overlay">
+          <div class="loading-spinner"></div>
+        </div>
+        <div id="visualization-canvas">
+          <!-- Dynamic Visualizer output -->
+        </div>
+
+        <!-- Optional Recursion Tree Drawer (for Merge Sort) -->
+        <div id="recursion-tree-view"></div>
+      </div>
+
+    </div>
+
+    <!-- Right Inspector / AI Co-Pilot Column -->
+    <aside class="inspector-card glass-card">
+      
+      <!-- Inspector Tabs -->
+      <nav class="inspector-nav">
+        <button class="inspector-tab active" data-target="panel-ai-tutor">🧠 AI Tutor</button>
+        <button class="inspector-tab" data-target="panel-pseudocode">📝 Pseudocode</button>
+        <button class="inspector-tab" data-target="panel-metrics">📊 Metrics</button>
+        <button class="inspector-tab" data-target="panel-code">💻 Code</button>
+      </nav>
+
+      <!-- Inspector Body -->
+      <div class="inspector-body">
+        
+        <!-- Panel 1: AI Tutor -->
+        <div id="panel-ai-tutor" class="inspector-panel active">
+          <div class="ai-tutor-container">
+            <div class="ai-header-card">
+              <div class="ai-header-title">
+                <span>🤖</span> AI Algorithmic Rationale
+              </div>
+              <span id="ai-source-badge" class="ai-source-tag">DAA AI</span>
+            </div>
+            
+            <div id="ai-tutor-explanation" class="ai-speech-bubble">
+              Welcome! As the algorithm executes, the AI Tutor breaks down each micro-decision, explaining why the algorithm took that step and what invariant is maintained.
+            </div>
+
+            <div class="ai-hint-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+              💡 <strong>Pro-Tip:</strong> Use the Left/Right Arrow keys to step frame-by-frame, or Spacebar to pause and inspect variable states.
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Pseudocode -->
+        <div id="panel-pseudocode" class="inspector-panel">
+          <div class="pseudocode-container" id="pseudocode-list">
+            <!-- Dynamic Pseudocode lines -->
+          </div>
+        </div>
+
+        <!-- Panel 3: Metrics -->
+        <div id="panel-metrics" class="inspector-panel">
+          <div class="metrics-cards-grid" id="metrics-cards-grid">
+            <!-- Dynamic Metrics cards -->
+          </div>
+        </div>
+
+        <!-- Panel 4: Code Implementation -->
+        <div id="panel-code" class="inspector-panel">
+          <div class="code-tab-header">
+            <button class="lang-btn active" data-lang="python">Python</button>
+            <button class="lang-btn" data-lang="cpp">C++</button>
+            <button class="lang-btn" data-lang="java">Java</button>
+            <button class="lang-btn" data-lang="javascript">JavaScript</button>
+          </div>
+          <pre class="code-pre-box"><code id="code-snippet-pre">// Implementation code will load here...</code></pre>
+        </div>
+
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- AI PROBLEM DETECTIVE VIEW -->
+  <section id="ai-detective-view" class="detective-view-container" style="display: none;">
+    <div class="detective-hero">
+      <h2>AI Problem Paradigm Detective</h2>
+      <p>Describe any coding challenge, technical interview problem, or real-world scenario. The AI analyzes its mathematical properties (Optimal Substructure, Overlapping Subproblems, Greedy Choice Property) to classify the best paradigm and launch the visualizer!</p>
+    </div>
+
+    <div class="detective-input-box">
+      <textarea id="detective-input-text" class="detective-textarea" placeholder="Paste or type a problem statement here... (e.g. 'Given a set of jobs with deadlines and profits, schedule them to maximize earnings')"></textarea>
+      <div style="display: flex; justify-content: flex-end;">
+        <button id="btn-detective-analyze" class="btn btn-primary" style="padding: 0.65rem 1.5rem; font-size: 0.95rem;">
+          🔍 Classify & Synthesize Solution
+        </button>
+      </div>
+    </div>
+
+    <!-- Analysis Result Card -->
+    <div id="detective-result-card" class="detective-result-card"></div>
+
+    <!-- Preset Problems Gallery -->
+    <div class="preset-problems-section">
+      <h3 style="font-size: 1.15rem; color: #fff;">💡 Or Try a Classic Paradigm Challenge:</h3>
+      <div id="preset-problems-list" class="preset-grid"></div>
+    </div>
+  </section>
+
+  <!-- MASTER THEOREM & COMPLEXITY CALCULATOR VIEW -->
+  <section id="master-theorem-view" class="mt-view-container" style="display: none;">
+    <div class="mt-card">
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; text-align: center;">Master Theorem Solver</h2>
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        Solve divide-and-conquer recurrences of the form:
+      </p>
+
+      <div class="mt-formula-display">
+        T(n) = a &middot; T(n / b) + &Theta;(n<sup>k</sup> &middot; log<sup>p</sup> n)
+      </div>
+
+      <div class="mt-inputs-grid">
+        <div class="input-group" style="flex-direction: column; align-items: flex-start;">
+          <label>a (Subproblems &ge; 1):</label>
+          <input type="number" id="mt-a" class="app-input" value="2" min="1" step="0.5" style="width: 100%;">
+        </div>
+        <div class="input-group" style="flex-direction: column; align-items: flex-start;">
+          <label>b (Division Factor &gt; 1):</label>
+          <input type="number" id="mt-b" class="app-input" value="2" min="1.1" step="0.5" style="width: 100%;">
+        </div>
+        <div class="input-group" style="flex-direction: column; align-items: flex-start;">
+          <label>k (Power of n &ge; 0):</label>
+          <input type="number" id="mt-k" class="app-input" value="1" min="0" step="0.5" style="width: 100%;">
+        </div>
+        <div class="input-group" style="flex-direction: column; align-items: flex-start;">
+          <label>p (log power):</label>
+          <input type="number" id="mt-p" class="app-input" value="0" step="1" style="width: 100%;">
+        </div>
+      </div>
+
+      <div style="text-align: center;">
+        <button id="btn-mt-calc" class="btn btn-primary" style="padding: 0.65rem 2rem;">
+          📐 Solve Recurrence
+        </button>
+      </div>
+
+      <div id="mt-result-card" class="mt-result-card"></div>
+    </div>
+  </section>
+
+  <!-- Gemini API Key Modal -->
+  <div id="api-key-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🔑 Google Gemini API Settings</h3>
+        <button class="modal-close" onclick="document.getElementById('api-key-modal').style.display='none'">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5;">
+        You can provide your personal Google Gemini API key to activate real-time Gemini 2.5 Flash explanations.
+        <br><br>
+        <strong>Note:</strong> If left empty, the application automatically uses the powerful built-in <strong>DAA Expert AI Engine</strong> with 100% offline accuracy!
+      </p>
+      <input type="password" id="gemini-key-input" class="app-input" style="width: 100%; margin-bottom: 1.25rem;" placeholder="AIzaSy...">
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-secondary" onclick="document.getElementById('api-key-modal').style.display='none'">Cancel</button>
+        <button id="btn-save-key" class="btn btn-primary">Save & Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/static/js/code_snippets.js"></script>
+  <script src="/static/js/visualizer.js"></script>
+  <script src="/static/js/ai_copilot.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
